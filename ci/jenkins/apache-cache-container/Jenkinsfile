@@ -1,16 +1,12 @@
 pipeline {
   agent any
 
-  environment {
-    DOCKER_IMAGE = ''
-  }
-
   stages {
     stage('Build image') {
       steps {
         script {
-          def imageName = "rbsilmann/apache-cache-container:${env.BRANCH_NAME ?: 'latest'}"
-          env.DOCKER_IMAGE = imageName
+          def dockerImage = "rbsilmann/apache-cache-container:${env.BRANCH_NAME ?: 'latest'}"
+          env.DOCKER_IMAGE = dockerImage
 
           docker.build(env.DOCKER_IMAGE, ".")
         }
