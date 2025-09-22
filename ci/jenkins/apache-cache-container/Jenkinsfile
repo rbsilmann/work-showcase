@@ -8,7 +8,7 @@ pipeline {
           def dockerImage = "rbsilmann/apache-cache-container:${env.BRANCH_NAME ?: 'latest'}"
           env.DOCKER_IMAGE = dockerImage
           sh 'ls -lh'
-          docker.build(env.DOCKER_IMAGE, ".")
+          docker.build(env.DOCKER_IMAGE, "ci/jenkins/apache-cache-container")
         }
       }
     }
