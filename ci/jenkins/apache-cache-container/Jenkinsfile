@@ -1,0 +1,30 @@
+pipeline {
+  agent any
+
+  environment {
+    DOCKER_IMAGE = ''
+  }
+
+  stages {
+    stage('Build image') {
+      steps {
+        script {
+          def imageName = "rbsilmann/apache-cache-container:${env.BRANCH_NAME ?: 'latest'}"
+          env.DOCKER_IMAGE = imageName
+
+          docker.build(env.DOCKER_IMAGE, ".")
+        }
+      }
+    }
+
+    stage('Push image') {
+      steps {
+        script {
+          docker.withRegistry('https://registry-1.docker.io/', 'credentials-id') {
+            docker.image(env.DOCKER_IMAGE).push()
+          }
+        }
+      }
+    }
+  }
+}
