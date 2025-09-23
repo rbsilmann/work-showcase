@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: modsecurity
+spec:
+  selector:
+    matchLabels:
+      app: modsecurity
+  template:
+    metadata:
+      labels:
+        app: modsecurity
+    spec:
+      containers:
+      - name: modsecurity
+        image: owasp/modsecurity:nginx
+        envFrom:
+        - configMapRef:
+            name: config-modsecurity
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "150m"
+        ports:
+        - containerPort: 80

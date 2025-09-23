@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: modsecurity
+spec:
+  destination:
+    namespace: webserver
+    server: https://kubernetes.default.svc
+  source:
+    path: cd/argocd/apps/modsecurity
+    repoURL: https://github.com/rbsilmann/work-showcase.git
+    targetRevision: HEAD
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      enabled: true
+    syncOptions:
+      - CreateNamespace=true
