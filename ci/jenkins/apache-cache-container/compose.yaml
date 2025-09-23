@@ -1,13 +1,4 @@
 services:
-  apache-cache:
-    image: rbsilmann/apache-cache:latest
-    container_name: apache-cache
-    hostname: apache.local
-    ports:
-    - "8080:80"
-    volumes:
-    - apache-cache-data:/usr/local/apache2/cache
-
   jenkins:
     image: jenkins/jenkins:lts
     container_name: jenkins
@@ -17,8 +8,7 @@ services:
     volumes:
     - jenkins-data:/var/jenkins_home
     - /usr/bin/docker:/usr/bin/docker
-    - /run/containerd/containerd.sock:/run/containerd/containerd.sock
+    - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
-  apache-cache-data:
   jenkins-data:
