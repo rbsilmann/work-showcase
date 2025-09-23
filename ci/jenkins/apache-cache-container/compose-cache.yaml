@@ -1,0 +1,12 @@
+services:
+  apache-cache:
+    image: rbsilmann/apache-cache:latest
+    container_name: apache-cache
+    hostname: apache.local
+    ports:
+    - "8080:80"
+    volumes:
+    - apache-cache-data:/usr/local/apache2/cache
+
+volumes:
+  apache-cache-data:
