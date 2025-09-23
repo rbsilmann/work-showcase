@@ -3,7 +3,10 @@ kind: ConfigMap
 metadata:
   name: config-modsecurity
 data:
-  PARANOIA: '1'
-  BLOCKING_PARANOIA: '1'
+  SERVER_NAME: 'localhost'
+  MODSEC_RULE_ENGINE: 'On'
+  PARANOIA: '4'
+  BLOCKING_PARANOIA: '4'
+  EXECUTING_PARANOIA: '4'
   ANOMALY_INBOUND: '5'
   ANOMALY_OUTBOUND: '4'

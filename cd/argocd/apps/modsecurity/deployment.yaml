@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: modsecurity
-        image: owasp/modsecurity:nginx
+        image: owasp/modsecurity:nginx-alpine
         envFrom:
         - configMapRef:
             name: config-modsecurity

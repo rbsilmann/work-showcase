@@ -24,7 +24,8 @@ cd/argocd/
 
 ### Prerequisites
 1. [Docker Engine](https://docs.docker.com/engine/install/)
-2. [Minikube](https://minikube.sigs.k8s.io/docs/start/)
+2. [kubectl](https://kubernetes.io/docs/tasks/tools/)
+3. [Minikube](https://minikube.sigs.k8s.io/docs/start/)
 
 ### Running
 After installing Docker Engine and Minikube, follow these steps:
@@ -83,3 +84,13 @@ kubectl get svc argocd-server -n argocd -o=jsonpath='{.status.loadBalancer.ingre
 3. Set **Project** to `default`.  
 4. Repository URL: **https://github.com/rbsilmann/work-showcase.git**.  
 5. Click **CONNECT**.
+6. In main page click **+ NEW APP**.
+7. Click **EDIT AS YAML**.
+8. Copy and replace the content with argocd/app-of-apps.yaml.
+9. Click **SAVE**.
+10. Click **CREATE**.
+
+Wait until all resources are created, then retrieve the external IPs with:  
+```bash
+kubectl -n webserver get services
+```
