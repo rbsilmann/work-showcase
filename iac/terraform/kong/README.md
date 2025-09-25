@@ -48,4 +48,4 @@ You can validate the services and routes has been created in Kong Manager:
 You can access the created objects:
 - [http://localhost:8000/admin-api](http://localhost:8000/admin-api)
 - [http://localhost:8000/rabbitmq/](http://localhost:8000/rabbitmq/)
-- [http://localhost:8000/rabbitmq-metrics)](http://localhost:8000/rabbitmq-metrics)
+- [http://localhost:8000/rabbitmq-metrics](http://localhost:8000/rabbitmq-metrics)
