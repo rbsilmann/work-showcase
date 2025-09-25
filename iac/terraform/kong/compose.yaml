@@ -1,0 +1,91 @@
+# https://developer.konghq.com/gateway/install/docker/
+volumes:
+  kong_db_data: {}
+
+networks:
+  kong-ee-net:
+    driver: bridge
+
+x-kong-config: &kong-env
+  KONG_DATABASE: postgres
+  KONG_PG_HOST: kong-ee-database
+  KONG_PG_DATABASE: kong
+  KONG_PG_USER: kong
+  KONG_PG_PASSWORD: kong
+  KONG_LICENSE_DATA: "${KONG_LICENSE_DATA}"
+
+services:
+  kong-ee-database:
+    image: postgres:latest
+    container_name: kong-ee-database
+    restart: on-failure
+    volumes:
+      - kong_db_data:/var/lib/postgresql/data
+    networks:
+      - kong-ee-net
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_DB: kong
+      POSTGRES_PASSWORD: kong
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "kong"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    ports:
+      - '5432:5432'
+
+  kong-bootstrap:
+    image: '${GW_IMAGE:-kong/kong-gateway:3.11.0.3}'
+    container_name: kong-bootstrap
+    networks:
+      - kong-ee-net
+    depends_on:
+      kong-ee-database:
+        condition: service_healthy
+    restart: on-failure
+    environment:
+      <<: *kong-env
+      KONG_PASSWORD: handyshake
+    command: kong migrations bootstrap
+
+  kong-cp:
+    image: '${GW_IMAGE:-kong/kong-gateway:3.11.0.3}'
+    container_name: kong-cp
+    restart: on-failure
+    networks:
+      - kong-ee-net
+    environment:
+      <<: *kong-env
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+      KONG_ADMIN_GUI_LISTEN: 0.0.0.0:8002, 0.0.0.0:8445 ssl
+      KONG_ADMIN_GUI_URL: http://${GW_HOST:-localhost}:8002
+      KONG_PASSWORD: handyshake
+    depends_on:
+      kong-bootstrap:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "8001:8001"
+      - "8444:8444"
+      - "8002:8002"
+      - "8445:8445"
+
+  rabbitmq:
+    build:
+      context: ./rabbitmq
+      dockerfile: Dockerfile
+    container_name: rabbitmq
+    networks:
+      - kong-ee-net
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15692:15692"
+    environment:
+      RABBITMQ_DEFAULT_USER: rmq-demo
+      RABBITMQ_DEFAULT_PASS: rmq-demo-pass
+    depends_on:
+      kong-cp:
+        condition: service_healthy
